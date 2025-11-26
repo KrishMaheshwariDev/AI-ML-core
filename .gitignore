@@ -1,0 +1,8 @@
+# ignore requirements
+requirements.txt
+
+# ignores the envoirment
+env/
+
+# ignores the vscode env
+.vscode/
