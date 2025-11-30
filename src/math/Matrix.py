@@ -1,25 +1,34 @@
 def matrix_add(a, b):
-    c = [[0 for _ in range(len(a))] for _ in range(len(b))]
-    for i in range(0, a.__len__()):
-        for j in range(0, a[i].__len__()):
+    if len(a) != len(b) or len(a[0]) != len(b[0]):
+        print("matrix shape is not same, operation not possible")
+        return
+    c = [[0 for _ in range(len(a[0]))] for _ in range(len(a))]
+    for i in range(len(a)):
+        for j in range(len(a[i])):
             c[i][j] = a[i][j] + b[i][j]
     return c
 
 def matrix_sub(a, b):
-    c = [[0 for _ in range(len(a))] for _ in range(len(b))]
-    for i in range(0, a.__len__()):
-        for j in range(0, a[i].__len__()):
+    if len(a) != len(b) or len(a[0]) != len(b[0]):
+        print("matrix shape is not same, operation not possible")
+        return
+    c = [[0 for _ in range(len(a[0]))] for _ in range(len(a))]
+    for i in range(len(a)):
+        for j in range(len(a[i])):
             c[i][j] = a[i][j] - b[i][j]
     return c
 
 def scalar_mul_matrix(s, a):
     c = [[0 for _ in range(len(a[0]))] for _ in range(len(a))]
-    for i in range(0, a.__len__()):
-        for j in range(0, a[i].__len__()):
+    for i in range(len(a)):
+        for j in range(len(a[i])):
             c[i][j] = s*a[i][j]
     return c
 
 def matrix_vector_mul(A, V):
+    if len(A[0]) != len(V):
+        print("Dimensions do not match for matrix-vector multiplication")
+        return
     result = [0 for _ in range(len(A))]
     for i in range(len(A)):
         for j in range(len(V)):
@@ -27,6 +36,9 @@ def matrix_vector_mul(A, V):
     return result
 
 def matrix_mul(A, B):
+    if len(A[0]) != len(B):
+        print("Matrix shapes incompatible for multiplication")
+        return
     result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
     for i in range(len(A)):
         for j in range(len(B[0])):
