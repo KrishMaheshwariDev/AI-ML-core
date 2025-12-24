@@ -1,30 +1,23 @@
-import os
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import statsmodels.api as sm
-
-# Absolute path resolution
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(
-    BASE_DIR,
-    "..",
-    "datasets",
-    "House-Prices-Data",
-    "train.csv"
-)
 
 # SideBar Panel
 st.sidebar.header("Dataset")
 uploaded = st.sidebar.file_uploader("Upload CSV", type=["csv"])
 
-if uploaded:
+if uploaded is not None:
     df = pd.read_csv(uploaded)
 else:
-    df = pd.read_csv(DATA_PATH)  # fallback to current dataset
+    st.warning("Upload a CSV file")
+    st.stop()  
 
 st.sidebar.header("EDA controls")
-target = st.sidebar.selectbox("Select the Target Column", options=df.columns)
+target = st.sidebar.selectbox("Select the Target Column", options=df.columns, index=None)
+
+if target is None:
+     st.warning("Select the Target Feature")
+     st.stop()
 
 is_target_numeric = pd.api.types.is_numeric_dtype(df[target])
 is_target_categorical = not is_target_numeric
@@ -94,7 +87,10 @@ if is_target_numeric:
     # Tab2 : Distributions
 
     with tab2:
-        feature = st.selectbox("Select the Numerical Feature", num_features, key=0)
+        feature = st.selectbox("Select the Numerical Feature", num_features, key=0, index=None)
+        if feature is None:
+             st.warning("Select a feature")
+             st.stop()
 
         col1, col2 = st.columns([3,1])
 
@@ -120,8 +116,12 @@ if is_target_numeric:
     # Tab 3: Relationships
 
     with tab3:
-        feature = st.selectbox("Select the Numerical Feature", num_features, key=1)
+        feature = st.selectbox("Select the Numerical Feature", num_features, key=1, index=None)
 
+        if feature is None:
+             st.warning("Select a feature")
+             st.stop()
+        
         fig = px.scatter(
                 df,
                 x=feature,
@@ -161,10 +161,18 @@ if is_target_numeric:
         st.subheader("Feature Redundancy Check")
 
         f1, f2 = st.selectbox(
-                "Feature 1", num_features, key="f1"
+                "Feature 1", num_features, key="f1", index=None
             ), st.selectbox(
-                "Feature 2", num_features, key="f2"
+                "Feature 2", num_features, key="f2", index=None
             )
+        
+        if f1 is None:
+             st.warning("Select feature 1")
+             st.stop()
+        
+        if f2 is None:
+             st.warning("Select a feature 2")
+             st.stop()
 
         if f1 != f2:
                 corr_val = df[[f1, f2]].corr().iloc[0, 1]
@@ -200,9 +208,13 @@ if is_target_numeric:
     with tab5:
         st.subheader(f"Categorical Feature Impact on {target}")
 
-        cat_feature = st.selectbox("Select categorical feature", cat_features)
+        cat_feature = st.selectbox("Select categorical feature", cat_features, index=None)
 
-            # Compute median impact
+        if cat_feature is None:
+             st.warning("Select a Category Feature")
+             st.stop()
+
+        # Compute median impact
         impact = df.groupby(cat_feature)[target].median().sort_values()
 
         fig = px.bar(
@@ -283,7 +295,11 @@ else:
         if target in num_for_class:
              num_for_class = num_for_class.drop(target)
 
-        num_feature = st.selectbox("Select numerical feature", num_for_class)
+        num_feature = st.selectbox("Select numerical feature", num_for_class, index=None)
+
+        if num_feature is None:
+             st.warning("Select a feature")
+             st.stop()
 
         fig = px.box(
                 df,
@@ -299,7 +315,11 @@ else:
 
         cat_for_class = df.select_dtypes(include=["object", "category"]).columns.drop(target)
 
-        cat_feature = st.selectbox("Select categorical feature", cat_for_class, key="cat_vs_target")
+        cat_feature = st.selectbox("Select categorical feature", cat_for_class, key="cat_vs_target", index=None)
+
+        if cat_feature is None:
+             st.warning("Select a feature")
+             st.stop()
 
         crosstab = pd.crosstab(df[cat_feature], df[target], normalize="index").sort_index()
 
