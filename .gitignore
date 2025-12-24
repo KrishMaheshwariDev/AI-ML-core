@@ -2,7 +2,7 @@
 requirements.txt
 
 # ignores the envoirment
-env/
+.venv/
 
 # ignores the vscode env
 .vscode/
