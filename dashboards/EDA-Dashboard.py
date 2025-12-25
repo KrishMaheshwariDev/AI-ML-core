@@ -6,11 +6,14 @@ import plotly.express as px
 st.sidebar.header("Dataset")
 uploaded = st.sidebar.file_uploader("Upload CSV", type=["csv"])
 
-if uploaded is not None:
-    df = pd.read_csv(uploaded)
-else:
-    st.warning("Upload a CSV file")
-    st.stop()  
+# if uploaded is not None:
+#     df = pd.read_csv(uploaded)
+# else:
+#     st.warning("Upload a CSV file")
+#     st.stop()  
+
+#Manual Dataset input
+df = pd.read_csv("D:/AI-ML-Core/datasets/House-Prices-Data/train.csv")
 
 st.sidebar.header("EDA controls")
 target = st.sidebar.selectbox("Select the Target Column", options=df.columns, index=None)
@@ -87,10 +90,7 @@ if is_target_numeric:
     # Tab2 : Distributions
 
     with tab2:
-        feature = st.selectbox("Select the Numerical Feature", num_features, key=0, index=None)
-        if feature is None:
-             st.warning("Select a feature")
-             st.stop()
+        feature = st.selectbox("Select the Numerical Feature", num_features, key=0)
 
         col1, col2 = st.columns([3,1])
 
@@ -116,11 +116,8 @@ if is_target_numeric:
     # Tab 3: Relationships
 
     with tab3:
-        feature = st.selectbox("Select the Numerical Feature", num_features, key=1, index=None)
+        feature = st.selectbox("Select the Numerical Feature", num_features, key=1)
 
-        if feature is None:
-             st.warning("Select a feature")
-             st.stop()
         
         fig = px.scatter(
                 df,
@@ -161,18 +158,10 @@ if is_target_numeric:
         st.subheader("Feature Redundancy Check")
 
         f1, f2 = st.selectbox(
-                "Feature 1", num_features, key="f1", index=None
+                "Feature 1", num_features, key="f1"
             ), st.selectbox(
-                "Feature 2", num_features, key="f2", index=None
+                "Feature 2", num_features, key="f2"
             )
-        
-        if f1 is None:
-             st.warning("Select feature 1")
-             st.stop()
-        
-        if f2 is None:
-             st.warning("Select a feature 2")
-             st.stop()
 
         if f1 != f2:
                 corr_val = df[[f1, f2]].corr().iloc[0, 1]
@@ -208,11 +197,8 @@ if is_target_numeric:
     with tab5:
         st.subheader(f"Categorical Feature Impact on {target}")
 
-        cat_feature = st.selectbox("Select categorical feature", cat_features, index=None)
+        cat_feature = st.selectbox("Select categorical feature", cat_features)
 
-        if cat_feature is None:
-             st.warning("Select a Category Feature")
-             st.stop()
 
         # Compute median impact
         impact = df.groupby(cat_feature)[target].median().sort_values()
@@ -295,11 +281,7 @@ else:
         if target in num_for_class:
              num_for_class = num_for_class.drop(target)
 
-        num_feature = st.selectbox("Select numerical feature", num_for_class, index=None)
-
-        if num_feature is None:
-             st.warning("Select a feature")
-             st.stop()
+        num_feature = st.selectbox("Select numerical feature", num_for_class)
 
         fig = px.box(
                 df,
@@ -315,11 +297,7 @@ else:
 
         cat_for_class = df.select_dtypes(include=["object", "category"]).columns.drop(target)
 
-        cat_feature = st.selectbox("Select categorical feature", cat_for_class, key="cat_vs_target", index=None)
-
-        if cat_feature is None:
-             st.warning("Select a feature")
-             st.stop()
+        cat_feature = st.selectbox("Select categorical feature", cat_for_class, key="cat_vs_target")
 
         crosstab = pd.crosstab(df[cat_feature], df[target], normalize="index").sort_index()
 
