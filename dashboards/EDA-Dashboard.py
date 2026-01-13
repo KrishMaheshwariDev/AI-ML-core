@@ -113,6 +113,16 @@ if is_target_numeric:
 
                 st.plotly_chart(fig, use_container_width=True)
 
+        # the count of the null values in the selected feature
+        st.subheader(f"Null Values in {feature}")
+        numCount = df[feature].isna().sum()
+        st.write(str(numCount))
+
+        # the percentage of the null values in the selected feature
+        st.subheader(f"Null Values Percentage in {feature}")
+        numCount = df[feature].isna().sum()
+        st.write(str(round((numCount / df.shape[0]) * 100, 2)) + "%")
+
     # Tab 3: Relationships
 
     with tab3:
@@ -209,6 +219,15 @@ if is_target_numeric:
                 title=f"Median {target} by {cat_feature}",
             )
         st.plotly_chart(fig, use_container_width=True)
+
+        st.subheader(f"Null Values in {cat_feature}")
+        numCount = df[cat_feature].isna().sum()
+        st.write(str(numCount))
+
+        # the percentage of the null values in the selected feature
+        st.subheader(f"Null Values Percentage in {cat_feature}")
+        numCount = df[cat_feature].isna().sum()
+        st.write(str(round((numCount / df.shape[0]) * 100, 2)) + "%")
 
         st.subheader("Category Variance (Stability Check)")
 
